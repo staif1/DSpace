@@ -1,0 +1,243 @@
+lsb_release -a - проверка версии Linux Server
+
+sudo su - root права
+
+sudo apt-get update - обновляем репозиторий 
+
+sudo apt-get upgrade - устанавливаем пакеты 
+
+sudo apt-get install mc htop - установка утилит 
+
+
+---------------------установка java--------------------
+
+sudo apt-get install openjdk-8-jre-headless openjdk-8-jdk-headless
+
+java -version - проверка 1.8.0_272 должно быть 
+
+update-alternatives --config java
+
+--------------------установка ant и maven-----------------
+
+sudo apt-get install ant maven 
+
+dpkg -l | grep openjdk - проверка openjdk-8-jdk-headless должно быть
+
+---------------------установка tomcat---------------------
+
+sudo apt-get install tomcat8 
+
+проверяем звходим по ip адрес:8080
+
+--------------------установка postgresql-----------------
+
+sudo apt-get install postgresql-10
+
+
+------------------------сощздание папок-------------------
+
+mkdir /opt/dspace - создаем папку 
+
+mkdir /opt/dspace_src - создаем папку 
+
+cd /opt/dspace_src - перешли в папку
+
+wget https://github.com/DSpace/DSpace/releases/download/dspace-5.10/dspace-5.10-src-release.tar.gz - скачали туда dspace
+
+tar xvzf ./dspace-5.10-src-release.tar.gz - разархивировали 
+
+sudo nano /opt/dspace_src/dspace-5.10-src-release/build.properties - редактруем конфиг 
+
+
+-----------------------------------редоктирование конфига build.properties------------------------
+
+dspace.install.dir=/opt/dspace
+
+dspace.ui = jspui
+
+dspace.url = $[dspce.baseUrl]
+
+mail.server.username=1
+mail.server.password=1
+
+handle.canonical.prefix=http://127.0.01/handle
+
+handle.prefix = demo
+
+
+
+--------------------------------------------mavem--------------------------
+
+cat /etc/passwd | grep tomcat - смотрим юзера как зовут 
+
+usermod -a -G tomcat8 dspace - добавляем пользователя в группу dspace
+usermod -a -G dspace tomcat8 - добавляем пользователя в группу tomcat8
+
+chown -R dspace.dspace /opt/dspace - устанавливаем владельца папки /opt/dspace
+chmod -R 777 /opt/dspace - даем права
+
+
+---------------------------------создание юзера postgresql---------------
+
+su postgres
+
+createuser -d -A -P dspace - создаем роль для входа с именм dspace
+
+ПАРОЛЬ КОТОРЫЙ УКАЗАН В !!!! -  build.propertis
+
+
+--------------------------------------создание базы------------------------
+
+createdb -O dspace -E UNICODE dspace - создание базы dspace ТАКАЯ КАК РОЛЬ ДЛЯ ВХОДА!!!!
+
+exit
+
+
+
+
+
+----------------------------------------установка mvn package---------------------
+
+cd /opt/dspace_src/dspace-5.10-src-release/dspace - переходим вдиректорию 
+
+mvn package 
+
+
+
+
+
+
+------------------------------------------установка ant fresh_install---------------
+
+cd /opt/dspace_src/dspace-5.10-src-release/dspace/target/dspace-installer - переходим в диреткорию 
+
+ant fresh_install 
+
+
+
+--------------------------------------------меняем доступ----------------
+
+cd /opt/dspace_src/dspace-5.10-src-release/dspace/target/dspace-installer 
+
+ls -l /opt/dspace - проверяем
+
+chown -R dspace.dspace /opt/dspace - чтобы не работать от root 
+
+chmod -R 777 /opt/dspace - даем всем доступ rwx
+
+ls -l /opt/dspace - проверяем все файлы должны быть ЗЕЛЕНЫЕ 
+
+
+-------------------------------------------настройка webapps------------
+
+cd 
+
+sudo service tomcat8 stop 
+
+cd /opt/dspace/webapps
+
+mc
+
+слева переходим в /opt/dspace/webapps
+
+справа переходим в /var/lib/tomcat8/webapps 
+удаляем папку ROOT
+
+
+----слева----копирем----направо------
+/jspui копируем как рута 
+выйдет окно 
+в /var/lib/tomcat8/webapps/ROOT
+
+копируеи /oai и /solr 
+
+
+ls -l /var/lib/tomcat8/webapps/ - проверяем права (ВСЕ ДОЛЖНО БЫТЬ ЗЕЛЕНЫМ!!!)
+
+chown -R tomcat8.tomcat8 /var/lib/tomcat8/webapps/ - владеть директорией webapps должен tomcat8
+
+
+------------nano /etc/default/tomcat8 - правим конфиги------------
+
+AUTHBIND = yes
+
+JAVA_OPTS="-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Djava.awt.headless=true -Xmx2048m"
+
+строчку выше мы удаляем 
+
+
+
+
+
+-------------------sudo nano /etc/tomcat8/server.xml - правми конфиг-------------
+
+находиим Connector и меняеи на это 
+ <Connector port="80" protocol="HTTP/1.1" 
+               enableLookups="false"
+               maxConnections="-1"
+               maxThreads="450"
+               maxHttpHeaderSize="16384"
+               connectionTimeout="20000" 
+               URIEncoding="UTF-8"
+               redirectPort="443" />
+
+
+
+----------------------------------заменить порт 8080 = на 80-------------------------------------
+надо в файлах:
+1)/modules/oai.cfg
+2)dspace.cfg
+3)/modules/discovery.cfg
+4)solr-statisitcs.cfg
+
+
+-----------------------------политки доступа для tomcat8-------------------
+
+ls -l /etc/tomcat8/policy.d/ - смторим какие файлы есть 
+
+sudo nano /etc/tomcat8/policy.d/60dspace.policy - создаем файл 
+-----------------вставляем туда вот это--------------------
+grant codeBase "file:/opt/dspace/-" {
+  permission java.security.AllPermission;
+};
+grant codeBase "file:/tmp/-" {
+  permission java.security.AllPermission;
+};
+
+ ls -l  - проверяем создался ли файл 
+
+chown root.tomcat8 /etc/tomcat8/policy.d/60dspace.policy - меняем владельца
+
+ ls -l  - проверяем поменялся ли владелец 
+
+
+sudo service tomcat8 start - запускаем томкат 
+
+
+
+
+------------------------------правим shell скприт dspace-----------------
+
+sudo nano /opt/dspace/bin/dspace
+
+----где #Allow user to specify java options trought JAVA_OPTS variable------
+JAVA_OPTS="-Xmx1024m -Dfile.encoding=UTF-8 -Djava.awt.headless=true -XX:+UseConcMarkSweepGC"
+
+
+
+
+
+---------------------------создаем админа----------------------
+cd /opt/dspace/bin
+
+./dspace create-administrator
+
+
+
+
+
+
+-------------------------проверка БД и эмаил----------------------
+sudo /opt/dspace/bin/dspace database test - проверка бд
+
+sudo /opt/dspace/bin/dspace test-email - проверка эмаил
