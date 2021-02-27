@@ -195,14 +195,17 @@ JAVA_OPTS="-Djava.awt.headless=true -XX:+UseConcMarkSweepGC -Djava.awt.headless=
 
 ls -l /etc/tomcat8/policy.d/ - смторим какие файлы есть 
 
+
 sudo nano /etc/tomcat8/policy.d/60dspace.policy - создаем файл 
------------------вставляем туда вот это--------------------
++-----------------вставляем туда вот это--------------------+
 grant codeBase "file:/opt/dspace/-" {
   permission java.security.AllPermission;
 };
 grant codeBase "file:/tmp/-" {
   permission java.security.AllPermission;
 };
++----------------------------------------------------------+
+
 
  ls -l  - проверяем создался ли файл 
 
