@@ -1,2 +1,2 @@
 # DSpace
-how to install DSpace 5.10
+how to install and settins DSpace
