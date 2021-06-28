@@ -1,0 +1,57 @@
+чтобы добавить Dropdown-menu нужно скопировать код 
+с DSpace 6.3 по пути /var/lib/tomcat8/webapps/ROOT/layout/navbar-default.jsp 
+
++------------------------вот этот код--------------------------------------------------------------------------------------------------------------------+
+  <div class="nav navbar-nav navbar-right">
+	 <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="jsp.layout.navbar-default.language"/><b class="caret"></b></a>
+        <ul class="dropdown-menu">
+ <%
+    for (int i = supportedLocales.length-1; i >= 0; i--)
+     {
+ %>
+      <li>
+        <a onclick="javascript:document.repost.locale.value='<%=supportedLocales[i].toString()%>';
+                  document.repost.submit();" href="<%= request.getContextPath() %>?locale=<%=supportedLocales[i].toString()%>">
+         <%= supportedLocales[i].getDisplayLanguage(supportedLocales[i])%>
+       </a>
+      </li>
+ <%
+     }
+ %>
+     </ul>
+    </li>
+    </ul>
+  </div>
+
++----------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+и вставить в DSpace-CRIS по пути /var/lib/tomcat8/webapps/ROOT/layout/navbar-default.jsp 
+
+вставить после строчки 
+ <li id="help-top-menu" class="<%= ( currentPage.endsWith( "/help" ) ? "active" : "" ) %>"><dspace:popup page="<%= LocaleSupport.getLocalizedMessage(pageContext, \"help.index\") %>"><fmt:message key="jsp.layout.navbar-default.help"/></dspace:popup></li></ul>
+
++--------------------------------------------------------+
+<div class="nav navbar-nav navbar-right">
+	 <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="jsp.layout.navbar-default.language"/><b class="caret"></b></a>
+        <ul class="dropdown-menu">
+ <%
+    for (int i = supportedLocales.length-1; i >= 0; i--)
+     {
+ %>
+      <li>
+        <a onclick="javascript:document.repost.locale.value='<%=supportedLocales[i].toString()%>';
+                  document.repost.submit();" href="<%= request.getContextPath() %>?locale=<%=supportedLocales[i].toString()%>">
+         <%= supportedLocales[i].getDisplayLanguage(supportedLocales[i])%>
+       </a>
+      </li>
+ <%
+     }
+ %>
+     </ul>
+    </li>
+    </ul>
+  </div>
