@@ -14,24 +14,24 @@
 
 
 +-----------------Редоктироване на главной странице-----------------------------+
-|  /opt/dspace/config/ - по этому пути лежат файлы new-side_ru, new-top_ru      |
-|  они нужны для того чтобы редактировать на галавной странице текст            | 
-|                                                                               |
-|    cp new-side.html news-side_ru.html - копируем для русской локали           |
-|    cp new-top.html news-top_ru.html                                           |
-|                                                                               |
-| /opt/dspace/config/spring/api/core-services.xml-надо туда добавить странички  |
-|                                                                               |
-|    <bean class="org.dspace.core.NewsServiceImpl"                              |
-|			id="org.dspace.core.service.NewsService">                                 |
-|		<property name="acceptableFilenames">                                       |
-|			<list>                                                                    |
-|				<value>news-top.html</value>                                            |
-|				<value>news-side.html</value>                                           |
-|			                                                                          |
-|			</list>                                                                   |
-|		</property>                                                                 |	
-|	</bean>                                                                       |
+  /opt/dspace/config/ - по этому пути лежат файлы new-side_ru, new-top_ru      
+  они нужны для того чтобы редактировать на галавной странице текст             
+                                                                               
+    cp new-side.html news-side_ru.html - копируем для русской локали           
+    cp new-top.html news-top_ru.html                                           
+                                                                               
+ /opt/dspace/config/spring/api/core-services.xml-надо туда добавить странички  
+                                                                               
+    <bean class="org.dspace.core.NewsServiceImpl"                              
+			id="org.dspace.core.service.NewsService">                                 
+		<property name="acceptableFilenames">                                       
+			<list>                                                                    
+				<value>news-top.html</value>                                            
+				<value>news-side.html</value>                                           
+			                                                                          
+			</list>                                                                   
+		</property>                                                                 	
+	</bean>                                                                       
 +-------------------------------------------------------------------------------+                                                
 
 
