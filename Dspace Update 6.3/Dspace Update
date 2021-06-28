@@ -1,0 +1,108 @@
+sudo su - заходим под рутом 
+
+преходим в папку где установлен DSpace - путь /opt
+
+wget https://github.com/DSpace/DSpace/releases/download/dspace-6.3/dspace-6.3-src-release.tar.gz
+- в папку opt скачиваем Dspace 6.3
+
+tar xvzf ./dspace-6.3-src-release.tar.gz - разарихивируем DSpace
+
+chown -R dspace:dspace dspace-6.3-src-release
+
+su postgres - зайти в консоль базы
+
+psql --username=postgres dspace -c "CREATE EXTENSION pgcrypto;"
+
+exit - выход
+
+cd /opt/dspace-6.3-src-release/dspace/config/ -переходим в директорию
+
+cp local.cfg.EXAMPLE local.cfg - копируем файл
+
+sudo nano local.cfg - заполняем поля local.cfg как в build.properties 
+sudo nano dspace.cfg - заполняем поля как в прошлой версии dspace.cfg
+
+
+/opt/dspace/bin#  ./dspace version - посмотерть версию DSpace
+
+(делаем на старых версиях)cd /opt/dspace/bin#  ./dspace cleanup -v - перед установкой очищаем кэш
+
+cd /opt/dspace-6.3-src-release/dspace/ - переходим в НОВУЮ ВЕРСИЮ DSpace
+
+
+mvn -U clean package - сборка
+
++--если дажва выдает ошибку ниже то заходим убираем переменную JAVA_HOME --+
+|                                                                          |
+|        +---переменная JAVA_HOME---+                                      |
+|        |sudo nano /etc/environment|                                      |
+|        +--------------------------+                                      |
+|    The JAVA_HOME environment variable is not defined correctly           |
+|    This environment variable is needed to run this program NB:           |
+|    JAVA_HOME should point to a JDK not a JRE                             |
++----------------------решение---------------------------------------------+
+| update-alternatives --config java и reboot                               |
++--------------------------------------------------------------------------+
+
+service tomcat8 stop - останавливаем tomcat8
+
+cd /opt/dspace-6.3-src-release/dspace/target/dspace-installer - переходим в директорию для обновления
+
+ls -l /opt/dspace - проверка 
+
+ant update - обновление 
+
+psql -U dspace -W -h 127.0.0.1 -f /opt/dspace/etc/postgres/update-sequences.sql dspace - обновили базу postgres
+
+пароль от базы: dspace
+
+создаем в корне папки opt,папку webapps bakup
+
+копируем туда из папки по пути /var/lib/tomcat8/webapps все содержимое(ROOT,oai,solr) -> в папку по пути /opt/webapps backup
+
+cd /var/lib/tomcat8/webapps - все старое содержимое удаляем
+
+cd /opt/dspace/webapps - переходим В СТАРЫЙ ДИСПЕЙС
+
+Копируем jspui solr oai -> /var/lib/tomcat8/webapps
+
+Переименовываем jspui в ROOT
+
+ls -l - проверяем кто хозяин
+
+chown -R tomcat8.tomcat8 ./ - меняем владельца на томкат
+
+chmod -R 777 ./ - делаем все зеленым 
+
+service tomcat8 start - запускаем кота 
+
+-------------------------проверка-----------------------
+
+cd /opt/dspace/bin#  ./dspace version - проверяем версию 
+
+cd /opt/dspace/bin#  ./dspace database info
+
++-------------------редоктируем конфиг sudo nano /opt/dspace/bin/dspace---------------------------------+
+|                                                                                                       |
+|  -----вставляем где строчка #Allow user to specify java options thriugh JAVA_OPTS variable----        |
+|                                                                                                       |
+|      JAVA_OPTS="-Xmx1536m -Dfile.encoding=UTF-8 -Djava.awt.headless=true -XX:+UseConcMarkSweepGC"     |
+|                                                                                                       |
++-------------------------------------------------------------------------------------------------------+
+строчку выше удаляем которая на 256 мб
+
+
+cd /opt/dspace/bin# ./dspace oai clean-cache - очистить кэш
+cd /opt/dspace/bin#  ./dspace oai import -c - проверем что работает
+ 
+
+
+
+---------------------возвращение костамизации---------------------
+из папки /opt/webapps backup/ROOT -> /var/lib/tomcat8/webaaps/ROOT
+переносим с заменой 
+1)папку static
+2)favico.ico
+3)папку image
+4)в папке /opt/dspace/config 
+редактируем файлы news-top.html,news-side.html,news-top_ru.html,news-side_ru.html
