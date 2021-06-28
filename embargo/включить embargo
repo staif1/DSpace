@@ -1,0 +1,28 @@
+путь -> /opt/dspace/config/ 
+
+редактируем файл item-submission.xml
+
+закоментируем строки
+  <!--Step 4 will be to Upload the item 
+      <step>
+        <heading>submit.progressbar.upload</heading>
+        <processing-class>org.dspace.submit.step.UploadStep</processing-class>
+        <jspui-binding>org.dspace.app.webui.submit.step.JSPUploadStep</jspui-binding>
+		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadStep</xmlui-binding>
+        <workflow-editable>true</workflow-editable>
+      </step> -->
+
+
+
+РАЗкоментируем строки 
+
+   <!-- Step 4 Upload Item with Embargo Features
+            to enable this step, please make sure to comment-out the previous step "UploadStep" -->
+       <step>
+           <heading>submit.progressbar.upload</heading>
+           <processing-class>org.dspace.submit.step.UploadWithEmbargoStep</processing-class>
+           <jspui-binding>org.dspace.app.webui.submit.step.JSPUploadWithEmbargoStep</jspui-binding>
+           <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadWithEmbargoStep</xmlui-binding>
+           <workflow-editable>true</workflow-editable>
+       </step>
+   
