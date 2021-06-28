@@ -1,0 +1,32 @@
+надо от начальника полчить код Google Analitics
+
+
+-----------------ВОТ ТАК ВЫГЛЯДИТ САМ КОД-----------------
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115626458-1"></script>
+
+<script>
+
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date());
+
+  gtag('config', 'UA-115626458-1'); <--- САМ НОМЕР UA-115626458-1
+
+  gtag('config', 'UA-54694630-1');
+
+  gtag('config', 'UA-40263236-1');
+
+</script>
+
+
+вставить его в dspace.cfg по пути /opt/dspace/config/ в файл dspace.cfg
+
+ctrl+f google
+
+находим строчку jspui.google.analytics.key=UA-XXXXXXXX-1
+
+
