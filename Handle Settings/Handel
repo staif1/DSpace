@@ -1,0 +1,94 @@
+1)sudo /opt/dspace/bin/dspace make-handle-config /opt/dspace/handle-server - 
+
+заполняем форму:
+
+Will this be a regular or caching Handle server?: 1
+
+Will this be a "primary" server (ie, not a mirror of another server)?(y/n) [y]: y
+
+Through what IP address will this server be accessible? [127.0.1.1]: 84.237.90.197
+
+Enter the (TCP/UDP) port number this server will listen to [2641]: жмем enter
+
+What port number will the HTTP interface be listening to? [8000]: жмем enter
+
+Would you like to log all accesses to this server?(y/n) [n]: n
+
+Enter the version/serial number of this site [1]: 1
+
+Please enter a short description of this server/site: Digital repository of Library GPNTB SO RAN
+
+Please enter the name of your organization: GPNTB SO RAN
+
+Please enter the name of a contact person
+for GPNTB SO RAN (optional) [(none)]: kosyakov@spsl.nsc.ru
+
+Please enter the telephone number of kosyakov@spsl.nsc.ru or of GPNTB SO RAN (optional) [(none)]: 8(383)373-06-43
+
+Please enter the email address of kosyakov@spsl.nsc.ru or of GPNTB SO RAN:  kosyakov@spsl.nsc.ru
+
+Would you like to disable UDP services?(y/n) [n]: n
+
+БЕЗ ПАРОЛЬНОЙ ФРАЗЫ!!!!
+
+
+
+
+2)редактруем файл по пути/opt/dspace/bin/handle-server/config.dct
+меня айпи адреса на серый ip сервера
+
+3)------редактруем файл по пути/opt/dspace/bin/handle-server/config.dct----включив следующие строки в предложение server_config:
+"storage_type" = "CUSTOM"
+"storage_class" = "org.dspace.handle.HandlePlugin"
+
+
+4)меняем ip адресс на серый
+
+
+5) проверям порты, откртыты или закрыты, порты должны быть открыты 
+nmap серый_ип -p 8000,2641 
+
+
+
+6)региструруем handle и заливаем  sitebndl.zip на сайт handle
+
+
+
+
+6)найти по пути /opt/dspace/handle-server/ в файле config.dct эти строки -> «300: 0.NA/YOUR_NAMING_AUTHORITY»
+и заменить YOUR_NAMING_AUTHORITY  на префикс который прислал Админ сайта Handle 
+
+
+
+
+6)Теперь запустите свой сервер дескрипторов (как пользователь dspace):
+переходим по пути /opt/dspace/bin/ запускаем sudo ./start-handle-server
+
+
+sudo /opt/dspace/bin/dspace make-handle-config /opt/dspace/handle-server - пересобрать натсройки handel 
+
+ps -ef | grep handle-server - проверка работы 
+
+nmap 127.0.0.1 -p 2641,8000 - проверка портов внутри 
+
+nmap 84.237.90.15 -p 8000,2461 - проверка отрытых портов наружу
+
+sudo ufw status - проверить выключен ли браудмер 
+
+sudo ps ax | grep handle
+
+netstat -tulpn - Проверяем открытость / закрытость портов:
+
+netstat -tulpn | grep :80 - Проверяем открытость / закрытость определенного порта:
+
+sudo iptables -L -n - покажет какие правила сейчас есть 
+
+sudo lsof -i:8080 -n -посмтоерть на каком порту что весит 
+
+/etc/ssh$ sudo nano sshd_config
+
+cat /etc/netplan/50-cloud-init.yaml - натсройки сетевого интерфейса в ubuntu 18.04
+
+nslookup dspace.gpntbsib.ru 8.8.8.8 - узнать белый ip сервера 
+
+http://hdl.handle.net/20.500.12758/1 - проверка 
