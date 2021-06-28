@@ -1,0 +1,5 @@
+------ путь редоктрования "Справка" чтобы грузилась в русском интерфейсе /var/lib/tomcat8/webapps/ROOT/help/------
+
+Создать копии файлов: collection-admin.html, index.html и site-admin.html
+
+С именами: collection-admin_ru.html, index__ru.html и site-admin_ru.html. 
