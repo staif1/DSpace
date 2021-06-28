@@ -1,0 +1,12 @@
+Для добаления русского необходимо пойти в файл /dspace/config/input-forms.xml
+
+----------------находим поле с языками----------------------
+ <!-- default language order: (from dspace 1.2.1)
+        "en_US", "en", "es", "de", "fr", "it", "ja", "zh", "other", ""
+     -->
+
+-------------вставить вот это ниже N/A-------------------
+     <pair>
+       <displayed-value>Russian</displayed-value>
+       <stored-value>ru</stored-value>
+      </pair>
